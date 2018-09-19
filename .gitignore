@@ -1,2 +1,14 @@
 
 *.csv
+
+.DS_Store
+
+.DS_Store
+
+Data/client_by_date.pickle
+
+.Rhistory
+
+.RData
+
+Untitled.Rmd
