@@ -11,11 +11,117 @@ library(ggplot2)
 library(purrr)
 library(tidyr)
 setwd( 'C:/Users/Sebastien/Documents/GitHub/Eleven_super_case_customer_insights')
-data = read.csv('VisualizeMe.csv')
+csv <- read.csv('Data/visit_sessions_1709_transac_10H.csv')[-1] %>% as.data.frame()
+
+
+csv[csv$CVIC_x != csv$CVIC_y, c('CVIC_x', 'CVIC_y')]
 ```
 
 ```{r}
-ggplot(data, aes(CVIC, col = net_cat)) + geom_histogram(stat = 'count')
+data <- data.frame(matrix(ncol = dim(csv)[2], nrow = dim(csv)[1]))
+colnames(data) <- colnames(csv)
+for(X in colnames(data)){
+  print(X)
+  data[,X] <- csv[X]
+}
+data
+```
+
+```{r}
+# Continuous
+hist_c <- function(data, X){
+  g <- ggplot(data, aes_string(X, col = 'CVIC_x')) +
+    geom_histogram(aes(y=0.5*..density..), position = 'identity', alpha = 0.5) +
+    ylab('Proportion') +
+    xlab(X) +
+    facet_wrap(~CVIC_x, nrow = 2)
+  return(g)
+}
+
+
+# Discrete
+hist_d <- function(data, X){
+  g <- ggplot(data, aes_string(X, fill = 'CVIC_x', group = 'CVIC_x')) +
+    geom_histogram(aes(y=c(..count..[..group..==1]/sum(..count..[..group..==1]),
+                           ..count..[..group..==2]/sum(..count..[..group..==2]))*100),
+                   position='identity', stat = 'count', alpha = 0.5) +
+    ylab("Percentage") +
+    xlab(X) +
+    facet_wrap(~CVIC_x, nrow = 2)
+  return(g)
+}
+
+hist_c(data, 'nb_pages_unique')
+hist_d(data, 'CONNECTED_SESSION')
+
+```
+
+
+```{r}
+plots <- list()
+
+# NO
+plots$CONNECTED_SESSION <- hist_d(data, 'CONNECTED_SESSION')
+
+# YES
+plots$DEVICE_TYPE <-  hist_d(data, 'DEVICE_TYPE')
+
+# YES
+plots$GLOBAL_SOURCES <- hist_d(data, 'GLOBAL_SOURCES')
+
+# YES
+plots$nb_pages_unique <- hist_c(data, 'nb_pages_unique')
+
+# MAYBE
+plots$start_hour <- hist_d(data, 'start_hour')
+
+# MAYBE
+plots$time_before_final <- hist_c(data, 'time_before_final')
+
+# No
+plots$ORDER_CHANNEL_x <- hist_d(data, 'ORDER_CHANNEL_x')
+
+# MAYBE
+plots$PRE_TAX_AMOUNT <- hist_c(data, 'PRE_TAX_AMOUNT')
+
+# YES
+plots$TOT_AMOUNT_SPENT <- hist_c(data, 'TOT_AMOUNT_SPENT')
+
+# YES
+plots$AVG_ORDER_AMOUNT <- hist_c(data %>% filter(AVG_ORDER_AMOUNT < 500), 'AVG_ORDER_AMOUNT')
+
+# YES
+plots$ACCOUNT_SENIORITY <- hist_c(data, 'ACCOUNT_SENIORITY')
+
+# YES
+plots$ORDER_FREQUENCY <- hist_c(data, 'ORDER_FREQUENCY')
+  
+# MAYBE
+plots$TOTAL_VISITS <- hist_c(data %>% filter(TOTAL_VISITS < 20), 'TOTAL_VISITS')
+
+# MAYBE
+plots$AVG_PAGES_VISITED_PER_VISIT <- hist_c(data %>% filter(AVG_PAGES_VISITED_PER_VISIT < 30), 'AVG_PAGES_VISITED_PER_VISIT')
+
+# MAYBE
+plots$VISIT_FREQUENCT <- hist_c(data %>% filter(VISIT_FREQUENCY < 60), 'VISIT_FREQUENCY')
+  
+plots
+```
+
+```{r}
+ggplot(data, aes(GLOBAL_SOURCES, col = CVIC_x)) + geom_histogram(stat = 'count', position="identity", alpha = 0.5)
+ggplot(data, aes(GLOBAL_SOURCES, col = CVIC_x)) + geom_histogram(stat = 'count')
+```
+
+
+
+```{r}
+ggplot(data, aes(x=X, color=CVIC_x)) +
+  geom_histogram(fill="white")
+# Overlaid histograms
+ggplot(data, aes(x=weight, color=sex)) +
+  geom_histogram(fill="white", alpha=0.5, position="identity", alpha = 0.5)
+#ggplot(data, aes(CVIC, col = net_cat)) + geom_histogram(stat = 'count')
 ```
 
 ```{r}
