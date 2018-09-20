@@ -1,0 +1,38 @@
+---
+title: "Visualize"
+author: "Sebastien Moeller"
+date: "September 19, 2018"
+output: html_document
+---
+
+```{r}
+library(dplyr)
+library(ggplot2)
+library(purrr)
+library(tidyr)
+setwd( 'C:/Users/Sebastien/Documents/GitHub/Eleven_super_case_customer_insights')
+data = read.csv('VisualizeMe.csv')
+```
+
+```{r}
+ggplot(data, aes(CVIC, col = net_cat)) + geom_histogram(stat = 'count')
+```
+
+```{r}
+ggplot(data, aes(x = CVIC, y = TOT_AMOUNT_SPENT, col = net_cat)) + geom_point()
+```
+
+```{r}
+dim(data[data$net_cat == 'identified',])
+```
+
+
+
+
+
+
+
+
+
+
+
