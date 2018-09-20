@@ -108,7 +108,7 @@ plots$TOTAL_VISITS <- hist_c(data %>% filter(TOTAL_VISITS < 20), 'TOTAL_VISITS',
 plots$AVG_PAGES_VISITED_PER_VISIT <- hist_c(data %>% filter(AVG_PAGES_VISITED_PER_VISIT < 30), 'AVG_PAGES_VISITED_PER_VISIT', 'Average Pages Visited per Visit')
 
 # MAYBE
-plots$VISIT_FREQUENCT <- hist_c(data %>% filter(VISIT_FREQUENCY < 60), 'VISIT_FREQUENCY', 'Visit Frequency')
+plots$VISIT_FREQUENCY <- hist_c(data %>% filter(VISIT_FREQUENCY < 60), 'VISIT_FREQUENCY', 'Visit Frequency')
   
 plots
 ```
